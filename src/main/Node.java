@@ -10,6 +10,7 @@ public class Node {
     public Node(char key) {
         this.key = key;
         this.red = false;
+
     }
 
     public char getKey() {
