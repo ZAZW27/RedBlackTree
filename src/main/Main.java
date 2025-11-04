@@ -11,5 +11,16 @@ public class Main {
         rdt.add('p');
         rdt.add('l');
         rdt.add('k');
+
+        Orders orders = new Orders();
+
+        System.out.println("Inorder Traversal:");
+        orders.inorder(rdt.getRoot());
+
+        System.out.println("\nPreorder Traversal:");
+        orders.preorder(rdt.getRoot());
+
+        System.out.println("\nPostorder Traversal:");
+        orders.postorder(rdt.getRoot());
     }
 }
