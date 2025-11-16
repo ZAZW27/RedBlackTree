@@ -1,45 +1,45 @@
 package main;
 
-public class Node {
-    private char key;
-    private Node right;
-    private Node left;
-    private Node parent;
+public class Node<T> {
+    private T key;
+    private Node<T> right;
+    private Node<T> left;
+    private Node<T> parent;
     private boolean red;
 
-    public Node(char key) {
+    public Node(T key) {
         this.key = key;
     }
 
-    public char getKey() {
+    public T getKey() {
         return key;
     }
 
-    public void setKey(char key) {
+    public void setKey(T key) {
         this.key = key;
     }
 
-    public Node getRight() {
+    public Node<T> getRight() {
         return right;
     }
 
-    public void setRight(Node right) {
+    public void setRight(Node<T> right) {
         this.right = right;
     }
 
-    public Node getLeft() {
+    public Node<T> getLeft() {
         return left;
     }
 
-    public void setLeft(Node left) {
+    public void setLeft(Node<T> left) {
         this.left = left;
     }
 
-    public Node getParent() {
+    public Node<T> getParent() {
         return parent;
     }
 
-    public void setParent(Node parent) {
+    public void setParent(Node<T> parent) {
         this.parent = parent;
     }
 

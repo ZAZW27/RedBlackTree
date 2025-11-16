@@ -1,136 +1,134 @@
 package main;
 
-public class RedBlackTree {
-    private Node root;
+public class RedBlackTree<T extends Comparable<T>> {
+    private Node<T> root;
 
     public RedBlackTree() {
         this.root = null;
     }
 
-    public Node getRoot() {
+    public Node<T> getRoot() {
         return this.root;
     }
 
-    private void rotateToLeft(Node current) {
-        Node temp = current.getRight();
-        current.setRight(temp.getLeft());
+    private void rotateLeft(Node<T> node) {
+        Node<T> rightChild = node.getRight();
+        node.setRight(rightChild.getLeft());
 
-        if (temp.getLeft() != null) {
-            temp.getLeft().setParent(current);
+        if (rightChild.getLeft() != null) {
+            rightChild.getLeft().setParent(node);
         }
 
-        temp.setParent(current.getParent());
-        if (current.getParent() == null) {
-            this.root = temp;
-        } else if (current == current.getParent().getLeft()) {
-            current.getParent().setLeft(temp);
-        } else {
-            current.getParent().setRight(temp);
-        }
-
-        temp.setLeft(current);
-        current.setParent(temp);
-    }
-
-    private void rotateToRight(Node current) {
-        Node temp = current.getLeft();
-        current.setLeft(temp.getRight());
-
-        if (temp.getRight() != null) {
-            temp.getRight().setParent(current);
-        }
-
-        temp.setParent(current.getParent());
-        if (current.getParent() == null) {
-            this.root = temp;
-        } else if (current == current.getParent().getRight()) {
-            current.getParent().setRight(temp);
-        } else {
-            current.getParent().setLeft(temp);
-        }
-
-        temp.setRight(current);
-        current.setParent(temp);
-    }
-
-    public void add(char key) {
-        Node node = new Node(key);
-        node.setParent(null);
-        node.setLeft(null);
-        node.setRight(null);
-        node.setRed(true);
-
-        Node y = null;
-        Node x = this.root;
-
-        while (x != null) {
-            y = x;
-            if (node.getKey() < x.getKey()) {
-                x = x.getLeft();
-            } else {
-                x = x.getRight();
-            }
-        }
-
-        node.setParent(y);
-        if (y == null) {
-            root = node;
-        } else if (node.getKey() < y.getKey()) {
-            y.setLeft(node);
-        } else {
-            y.setRight(node);
-        }
+        rightChild.setParent(node.getParent());
 
         if (node.getParent() == null) {
-            node.setRed(false);
+            this.root = rightChild;
+        } else if (node == node.getParent().getLeft()) {
+            node.getParent().setLeft(rightChild);
+        } else {
+            node.getParent().setRight(rightChild);
+        }
+
+        rightChild.setLeft(node);
+        node.setParent(rightChild);
+    }
+
+    private void rotateRight(Node<T> node) {
+        Node<T> leftChild = node.getLeft();
+        node.setLeft(leftChild.getRight());
+
+        if (leftChild.getRight() != null) {
+            leftChild.getRight().setParent(node);
+        }
+
+        leftChild.setParent(node.getParent());
+
+        if (node.getParent() == null) {
+            this.root = leftChild;
+        } else if (node == node.getParent().getRight()) {
+            node.getParent().setRight(leftChild);
+        } else {
+            node.getParent().setLeft(leftChild);
+        }
+
+        leftChild.setRight(node);
+        node.setParent(leftChild);
+    }
+
+    public void add(T key) {
+        Node<T> newNode = new Node<>(key);
+        newNode.setRed(true);
+
+        if (this.root == null) {
+            this.root = newNode;
+            newNode.setRed(false);
             return;
         }
 
-        if (node.getParent().getParent() == null) return;
+        Node<T> parent = null;
+        Node<T> current = this.root;
 
-        fixInsert(node);
+        while (current != null) {
+            parent = current;
+            if (newNode.getKey().compareTo(current.getKey()) < 0) {
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
+
+        newNode.setParent(parent);
+        if (newNode.getKey().compareTo(parent.getKey()) < 0) {
+            parent.setLeft(newNode);
+        } else {
+            parent.setRight(newNode);
+        }
+
+        fixInsert(newNode);
     }
 
-    private void fixInsert(Node k) {
-        Node u;
-        while (k.getParent() != null && k.getParent().isRed()) {
-            if (k.getParent() == k.getParent().getParent().getRight()) {
-                u = k.getParent().getParent().getLeft();
+    private void fixInsert(Node<T> node) {
+        while (node.getParent() != null && node.getParent().isRed()) {
+            if (node.getParent() == node.getParent().getParent().getLeft()) {
+                Node<T> uncle = node.getParent().getParent().getRight();
 
-                if (u != null && u.isRed()) {
-                    u.setRed(false);
-                    k.getParent().setRed(false);
-                    k.getParent().getParent().setRed(true);
-                    k = k.getParent().getParent();
+                if (uncle != null && uncle.isRed()) {
+                    node.getParent().setRed(false);
+                    uncle.setRed(false);
+                    node.getParent().getParent().setRed(true);
+                    node = node.getParent().getParent();
                 } else {
-                    if (k == k.getParent().getLeft()) {
-                        k = k.getParent();
-                        rotateToRight(k);
+                    if (node == node.getParent().getRight()) {
+                        node = node.getParent();
+                        rotateLeft(node);
                     }
-                    k.getParent().setRed(false);
-                    k.getParent().getParent().setRed(true);
-                    rotateToLeft(k.getParent().getParent());
+                    node.getParent().setRed(false);
+                    node.getParent().getParent().setRed(true);
+                    rotateRight(node.getParent().getParent());
                 }
             } else {
-                u = k.getParent().getParent().getRight();
+                Node<T> uncle = node.getParent().getParent().getLeft();
 
-                if (u != null && u.isRed()) {
-                    u.setRed(false);
-                    k.getParent().setRed(false);
-                    k.getParent().getParent().setRed(true);
-                    k = k.getParent().getParent();
+                if (uncle != null && uncle.isRed()) {
+                    node.getParent().setRed(false);
+                    uncle.setRed(false);
+                    node.getParent().getParent().setRed(true);
+                    node = node.getParent().getParent();
                 } else {
-                    if (k == k.getParent().getRight()) {
-                        k = k.getParent();
-                        rotateToLeft(k);
+                    if (node == node.getParent().getLeft()) {
+                        node = node.getParent();
+                        rotateRight(node);
                     }
-                    k.getParent().setRed(false);
-                    k.getParent().getParent().setRed(true);
-                    rotateToRight(k.getParent().getParent());
+                    node.getParent().setRed(false);
+                    node.getParent().getParent().setRed(true);
+                    rotateLeft(node.getParent().getParent());
                 }
             }
-            if (k == root) {break;}
+
+            if (node == this.root) {
+                break;
+            }
         }
-        root.setRed(false);
+        this.root.setRed(false);
     }
 }
