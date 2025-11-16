@@ -72,7 +72,6 @@ public class RedBlackTree {
             }
         }
 
-
         node.setParent(y);
         if (y == null) {
             root = node;
@@ -87,7 +86,7 @@ public class RedBlackTree {
             return;
         }
 
-        if (node.getParent().getParent() == null) {return;}
+        if (node.getParent().getParent() == null) return;
 
         fixInsert(node);
     }
