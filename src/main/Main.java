@@ -23,10 +23,10 @@ public class Main {
 
 //        System.out.println("Inorder Traversal:");
 //        orders.inorder(rdt.getRoot());
-//
+
         System.out.println("\nPreorder Traversal:");
         orders.preorder(rdt.getRoot());
-//
+
 //        System.out.println("\nPostorder Traversal:");
 //        orders.postorder(rdt.getRoot());
     }
