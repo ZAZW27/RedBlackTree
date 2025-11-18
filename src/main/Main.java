@@ -3,7 +3,7 @@ package main;
 public class Main {
     public static void main(String[] args) {
         RedBlackTree<Character> rdt = new RedBlackTree<>();
-        rdt.add('a');
+        rdt.add('0');
         rdt.add('c');
         rdt.add('d');
         rdt.add('r');
@@ -19,7 +19,7 @@ public class Main {
         Orders orders = new Orders();
 
         TreeVisualizer viz = new TreeVisualizer();
-         viz.printCompact(rdt.getRoot());
+        viz.printCompact(rdt.getRoot());
 
 //        System.out.println("Inorder Traversal:");
 //        orders.inorder(rdt.getRoot());
@@ -27,7 +27,7 @@ public class Main {
         System.out.println("\nPreorder Traversal:");
         orders.preorder(rdt.getRoot());
 
-//        System.out.println("\nPostorder Traversal:");
-//        orders.postorder(rdt.getRoot());
+        System.out.println("\nPostorder Traversal:");
+        orders.postorder(rdt.getRoot());
     }
 }
