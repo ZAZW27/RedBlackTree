@@ -2,11 +2,12 @@ package main;
 
 import java.util.*;
 
-// Usage in Main.java:
-// TreeVisualizer viz = new TreeVisualizer();
-// viz.printCompact(rdt.getRoot());
-
 public class TreeVisualizer {
+
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_BLACK_OR_GREY = "\u001B[70m";
+
     public void printCompact(Node root) {
         if (root == null) {
             System.out.println("Empty tree");
@@ -32,9 +33,19 @@ public class TreeVisualizer {
                     next.add(null);
                     next.add(null);
                 } else {
-                    String s = n.getKey() + (n.isRed() ? "R" : "B");
+                    String s = String.valueOf(n.getKey());
+
+                    // Apply color based on node's redness
+                    if (n.isRed()) {
+                        s = ANSI_RED + s + ANSI_RESET;
+                    } else {
+                        s = ANSI_BLACK_OR_GREY + s + ANSI_RESET;
+                    }
+
+                    // We need to calculate widest based on the actual key length, not the colored string length
+                    if (String.valueOf(n.getKey()).length() > widest) widest = String.valueOf(n.getKey()).length();
+
                     line.add(s);
-                    if (s.length() > widest) widest = s.length();
 
                     next.add(n.getLeft());
                     next.add(n.getRight());
@@ -63,15 +74,15 @@ public class TreeVisualizer {
                 for (int j = 0; j < line.size(); j++) {
                     char c = ' ';
                     if (j % 2 == 1) {
-                        if (line.get(j - 1) != null) {
-                            c = (line.get(j) != null) ? '┴' : '┘';
+                        if (line.get(j - 1) != null && !line.get(j - 1).trim().isEmpty()) { // Check for actual content
+                            c = (line.get(j) != null && !line.get(j).trim().isEmpty()) ? '┴' : '┘'; // Check for actual content
                         } else {
-                            if (line.get(j) != null) c = '└';
+                            if (line.get(j) != null && !line.get(j).trim().isEmpty()) c = '└'; // Check for actual content
                         }
                     }
                     System.out.print(c);
 
-                    if (line.get(j) == null) {
+                    if (line.get(j) == null || line.get(j).trim().isEmpty()) { // Check for actual content
                         for (int k = 0; k < perpiece - 1; k++) {
                             System.out.print(" ");
                         }
@@ -91,8 +102,15 @@ public class TreeVisualizer {
             for (int j = 0; j < line.size(); j++) {
                 String f = line.get(j);
                 if (f == null) f = "";
-                int gap1 = (int) Math.ceil(perpiece / 2f - f.length() / 2f);
-                int gap2 = (int) Math.floor(perpiece / 2f - f.length() / 2f);
+
+                int actualKeyLength = 0;
+                if (line.get(j) != null && !line.get(j).trim().isEmpty()) {
+                    String rawKey = line.get(j).replaceAll("\\u001B\\[[;\\d]*m", ""); // Remove ANSI codes
+                    actualKeyLength = rawKey.length();
+                }
+
+                int gap1 = (int) Math.ceil(perpiece / 2f - actualKeyLength / 2f);
+                int gap2 = (int) Math.floor(perpiece / 2f - actualKeyLength / 2f);
 
                 for (int k = 0; k < gap1; k++) {
                     System.out.print(" ");

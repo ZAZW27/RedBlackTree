@@ -1,18 +1,18 @@
 package main;
 
-public class RedBlackTree<T extends Comparable<T>> {
-    private Node<T> root;
+public class RedBlackTree {
+    private Node root;
 
     public RedBlackTree() {
         this.root = null;
     }
 
-    public Node<T> getRoot() {
+    public Node getRoot() {
         return this.root;
     }
 
-    private void rotateLeft(Node<T> node) {
-        Node<T> rightChild = node.getRight();
+    private void rotateLeft(Node node) {
+        Node rightChild = node.getRight();
         node.setRight(rightChild.getLeft());
 
         if (rightChild.getLeft() != null) {
@@ -33,8 +33,8 @@ public class RedBlackTree<T extends Comparable<T>> {
         node.setParent(rightChild);
     }
 
-    private void rotateRight(Node<T> node) {
-        Node<T> leftChild = node.getLeft();
+    private void rotateRight(Node node) {
+        Node leftChild = node.getLeft();
         node.setLeft(leftChild.getRight());
 
         if (leftChild.getRight() != null) {
@@ -55,8 +55,8 @@ public class RedBlackTree<T extends Comparable<T>> {
         node.setParent(leftChild);
     }
 
-    public void add(T key) {
-        Node<T> newNode = new Node<>(key);
+    public void add(int key) {
+        Node newNode = new Node(key);
         newNode.setRed(true);
 
         if (this.root == null) {
@@ -65,12 +65,13 @@ public class RedBlackTree<T extends Comparable<T>> {
             return;
         }
 
-        Node<T> parent = null;
-        Node<T> current = this.root;
+        Node parent = null;
+        Node current = this.root;
 
         while (current != null) {
             parent = current;
-            if (newNode.getKey().compareTo(current.getKey()) < 0) {
+            // Changed compareTo to standard integer operators
+            if (newNode.getKey() < current.getKey()) {
                 current = current.getLeft();
             } else {
                 current = current.getRight();
@@ -78,7 +79,8 @@ public class RedBlackTree<T extends Comparable<T>> {
         }
 
         newNode.setParent(parent);
-        if (newNode.getKey().compareTo(parent.getKey()) < 0) {
+        // Changed compareTo to standard integer operators
+        if (newNode.getKey() < parent.getKey()) {
             parent.setLeft(newNode);
         } else {
             parent.setRight(newNode);
@@ -87,10 +89,10 @@ public class RedBlackTree<T extends Comparable<T>> {
         fixInsert(newNode);
     }
 
-    private void fixInsert(Node<T> node) {
+    private void fixInsert(Node node) {
         while (node.getParent() != null && node.getParent().isRed()) {
             if (node.getParent() == node.getParent().getParent().getLeft()) {
-                Node<T> uncle = node.getParent().getParent().getRight();
+                Node uncle = node.getParent().getParent().getRight();
 
                 if (uncle != null && uncle.isRed()) {
                     node.getParent().setRed(false);
@@ -107,7 +109,7 @@ public class RedBlackTree<T extends Comparable<T>> {
                     rotateRight(node.getParent().getParent());
                 }
             } else {
-                Node<T> uncle = node.getParent().getParent().getLeft();
+                Node uncle = node.getParent().getParent().getLeft();
 
                 if (uncle != null && uncle.isRed()) {
                     node.getParent().setRed(false);
